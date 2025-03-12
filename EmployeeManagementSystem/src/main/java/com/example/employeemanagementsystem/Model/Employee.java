@@ -34,7 +34,6 @@ public class Employee {
     private String email;
 
 
-    @Max(value = 10,message = "phone number must consists of exactly 10 digits.")
     @Pattern(regexp = "^05-[0-9]{8}$", message = "The phone number must start with 05 and contains 10 number ex: 0554603625")
     private int phoneNumber;
 
