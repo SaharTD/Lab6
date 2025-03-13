@@ -80,23 +80,13 @@ return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Employee added
 // Search Employees  by Position
     @GetMapping("search/{position}")
     public ResponseEntity  searchEmployee(@PathVariable String position){
-        ArrayList<Employee>supervisor=new ArrayList<>();
-        ArrayList<Employee>coordinator=new ArrayList<>();
 
-        if (position.equalsIgnoreCase("supervisor") ){
-            for(Employee e :employees){
-                if (e.getPosition().equalsIgnoreCase("supervisor")){
-                    supervisor.add(e);
-                }
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("The employees with position -- "+position+"are :"+supervisor));
-            }
-        }else if(position.equalsIgnoreCase("coordinator")){
-            for(Employee e :employees){
-                if (e.getPosition().equalsIgnoreCase("coordinator")){
-                    coordinator.add(e);
-                }
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("The employees with position -- "+position+"are :"+coordinator));
-            }
+
+        // make more simple no need for 2 lists
+        ArrayList<Employee>positionList=new ArrayList<>();
+
+        if (position.equalsIgnoreCase("supervisor" ) || position.equalsIgnoreCase("coordinator")){
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("The employees with position -- "+position+"are :"+positionList));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("the position you entered is not found"));
     }
@@ -163,14 +153,16 @@ return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Employee added
 @PutMapping("promote/{supervisor_id}/{coordinator_id}")
 public ResponseEntity promoteEmployee(@PathVariable String supervisor_id,@PathVariable String coordinator_id){
 for(Employee e :employees) {
-    if (e.getId().equalsIgnoreCase(supervisor_id)&&e.getPosition().equalsIgnoreCase("supervisor")){
-        if (e.getId().equalsIgnoreCase(coordinator_id)&& e.getAge()<30 && e.isOnLeave()){
-            e.setPosition("Supervisor");
-            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Employees "+e.getName()+" was promoted successfully"));
-        }
-      else  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("The employee did not meet the promotion criteria "));
+    if (e.getId().equalsIgnoreCase(supervisor_id) && e.getPosition().equalsIgnoreCase("supervisor")) {
+        for (Employee c : employees) {
+            if (c.getId().equalsIgnoreCase(coordinator_id) && c.getAge() < 30 && e.isOnLeave()) {
+                c.setPosition("Supervisor");
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Employees " + e.getName() + " was promoted successfully"));
+            } else
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("The employee did not meet the promotion criteria "));
         }
 
+    }
 }
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Permission to promote was not granted "));
 
