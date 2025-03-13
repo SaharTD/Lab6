@@ -31,10 +31,12 @@ public class Employee {
 
 
     @Email(message = "Please enter the email in the correct format")
+    @NotEmpty(message = "The id can not be empty")
     private String email;
 
 
     @Pattern(regexp = "^05-[0-9]{8}$", message = "The phone number must start with 05 and contains 10 number ex: 0554603625")
+    @NotNull(message = "phone number can not be empty")
     private int phoneNumber;
 
 
